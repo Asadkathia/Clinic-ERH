@@ -16,7 +16,8 @@ import { WhatsappPage } from "./pages/WhatsappPage";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/landing" element={<LandingPage />} />
       <Route path="/request-success" element={<RequestSuccessPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route
