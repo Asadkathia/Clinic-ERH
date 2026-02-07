@@ -1,22 +1,15 @@
-import { buildLineCoordinates, coordinatesToSvgPoints, formatCompactNumber } from "../mappers";
+import { formatCompactNumber } from "../mappers";
 import type { PatientTrendPoint } from "../types";
 import { DashboardSectionCard } from "./DashboardSectionCard";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 type PatientsOverviewCardProps = {
   points: PatientTrendPoint[];
 };
 
-const chartWidth = 520;
-const chartHeight = 190;
-
 export function PatientsOverviewCard({ points }: PatientsOverviewCardProps) {
   const newSeries = points.map((point) => point.newPatients);
   const returningSeries = points.map((point) => point.returningPatients);
-  const newCoords = buildLineCoordinates(newSeries, chartWidth, chartHeight);
-  const returningCoords = buildLineCoordinates(returningSeries, chartWidth, chartHeight);
-  const highlightIndex = Math.min(3, points.length - 1);
-  const highlightPoint = newCoords[highlightIndex];
-  const highlightLabel = points[highlightIndex];
 
   return (
     <DashboardSectionCard title="Patients Overview" actionLabel="View all">
@@ -32,30 +25,39 @@ export function PatientsOverviewCard({ points }: PatientsOverviewCardProps) {
       </div>
 
       <div className="patients-chart-wrap">
-        <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="patients-chart" role="img" aria-label="New and returning patient trend">
-          <polyline className="patients-gridline" points={`18,24 ${chartWidth - 18},24`} />
-          <polyline className="patients-gridline" points={`18,92 ${chartWidth - 18},92`} />
-          <polyline className="patients-gridline" points={`18,160 ${chartWidth - 18},160`} />
-
-          <polyline className="patients-line patients-line--new" points={coordinatesToSvgPoints(newCoords)} />
-          <polyline className="patients-line patients-line--returning" points={coordinatesToSvgPoints(returningCoords)} />
-
-          {highlightPoint ? <circle className="patients-point" cx={highlightPoint.x} cy={highlightPoint.y} r={4} /> : null}
-        </svg>
-
-        {highlightPoint && highlightLabel ? (
-          <div className="patients-tooltip" style={{ left: `${(highlightPoint.x / chartWidth) * 100}%`, top: `${(highlightPoint.y / chartHeight) * 100}%` }}>
-            <strong>{highlightLabel.month}</strong>
-            <span>New: {highlightLabel.newPatients}</span>
-            <span>Returning: {highlightLabel.returningPatients}</span>
-          </div>
-        ) : null}
-      </div>
-
-      <div className="patients-months">
-        {points.map((point) => (
-          <span key={point.month}>{point.month}</span>
-        ))}
+        <ResponsiveContainer width="100%" height={190}>
+          <LineChart data={points} margin={{ top: 8, right: 6, left: -16, bottom: 0 }}>
+            <CartesianGrid stroke="rgba(96,112,134,0.16)" strokeDasharray="3 4" vertical={false} />
+            <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: "var(--text-muted)" }} />
+            <YAxis hide domain={[0, "dataMax + 80"]} />
+            <Tooltip
+              contentStyle={{
+                borderRadius: 10,
+                border: "1px solid var(--border)",
+                boxShadow: "var(--elevation-sm)",
+                background: "rgba(11,89,98,0.96)",
+                color: "#fff",
+              }}
+              labelStyle={{ color: "#fff", fontWeight: 700 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="newPatients"
+              stroke="var(--dash-lime)"
+              strokeWidth={2.5}
+              dot={{ r: 0 }}
+              activeDot={{ r: 4, stroke: "#1a2f4f", strokeWidth: 2, fill: "#fff" }}
+            />
+            <Line
+              type="monotone"
+              dataKey="returningPatients"
+              stroke="var(--dash-teal)"
+              strokeWidth={2.5}
+              dot={{ r: 0 }}
+              activeDot={{ r: 4, stroke: "#1a2f4f", strokeWidth: 2, fill: "#fff" }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </DashboardSectionCard>
   );

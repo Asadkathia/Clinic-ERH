@@ -1,6 +1,7 @@
 import { formatCurrency, formatPercent } from "../mappers";
 import type { FinancialSeriesPoint } from "../types";
 import { DashboardSectionCard } from "./DashboardSectionCard";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 type FinancialSnapshotCardProps = {
   points: FinancialSeriesPoint[];
@@ -10,7 +11,6 @@ export function FinancialSnapshotCard({ points }: FinancialSnapshotCardProps) {
   const revenueTotal = points.reduce((sum, point) => sum + point.revenue, 0);
   const expenseTotal = points.reduce((sum, point) => sum + point.expenses, 0);
   const profitMargin = revenueTotal === 0 ? 0 : ((revenueTotal - expenseTotal) / revenueTotal) * 100;
-  const peakValue = Math.max(...points.map((point) => Math.max(point.revenue, point.expenses)), 1);
 
   return (
     <DashboardSectionCard
@@ -29,22 +29,29 @@ export function FinancialSnapshotCard({ points }: FinancialSnapshotCardProps) {
         </div>
       </div>
 
-      <div className="financial-bars" aria-label="Revenue and expense trend chart">
-        {points.map((point) => (
-          <div key={point.month} className="financial-bar-group">
-            <div
-              className="financial-bar financial-bar--revenue"
-              style={{ height: `${(point.revenue / peakValue) * 120}px` }}
-              title={`Revenue ${point.month}: ${formatCurrency(point.revenue)}`}
+      <div className="financial-chart" aria-label="Revenue and expense trend chart">
+        <ResponsiveContainer width="100%" height={190}>
+          <BarChart data={points} margin={{ top: 8, right: 4, left: -16, bottom: 0 }} barGap={8}>
+            <CartesianGrid stroke="rgba(96,112,134,0.16)" strokeDasharray="3 4" vertical={false} />
+            <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: "var(--text-muted)" }} />
+            <YAxis hide domain={[0, "dataMax + 20000"]} />
+            <Tooltip
+              cursor={{ fill: "rgba(33,95,255,0.06)" }}
+              contentStyle={{
+                borderRadius: 10,
+                border: "1px solid var(--border)",
+                boxShadow: "var(--elevation-sm)",
+                background: "rgba(255,255,255,0.98)",
+              }}
+              formatter={(value) =>
+                typeof value === "number" ? formatCurrency(value) : String(value ?? "")
+              }
+              labelFormatter={(label) => `Month: ${String(label)}`}
             />
-            <div
-              className="financial-bar financial-bar--expense"
-              style={{ height: `${(point.expenses / peakValue) * 120}px` }}
-              title={`Expenses ${point.month}: ${formatCurrency(point.expenses)}`}
-            />
-            <span>{point.month}</span>
-          </div>
-        ))}
+            <Bar dataKey="revenue" fill="var(--dash-lime)" radius={[8, 8, 0, 0]} maxBarSize={18} />
+            <Bar dataKey="expenses" fill="var(--dash-teal)" radius={[8, 8, 0, 0]} maxBarSize={18} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </DashboardSectionCard>
   );

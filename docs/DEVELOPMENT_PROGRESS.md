@@ -56,7 +56,8 @@
 - [x] Dashboard mock data contracts + mappers (`DashboardViewModel` based)
 - [x] Responsive dashboard behavior (desktop/tablet/mobile)
 - [x] Dashboard and shell microinteraction pass
-- [ ] Recharts renderer swap (blocked by network package install)
+- [x] Recharts renderer migration for dashboard charts
+- [x] Chart bundle optimization (lazy-loaded widgets + manual chunking)
 
 ## Work Log
 ### 2026-02-06
@@ -93,13 +94,17 @@
 - Preserved operations functionality by integrating to-do + recent activity module in replicated dashboard.
 - Added frontend documentation section for dashboard component map, token groups, and chart data contracts in `frontend/README.md`.
 - Re-validated frontend with `npm run build` and `npm run lint`.
+- Installed `recharts` and replaced local chart renderers in dashboard KPI modules.
+- Replaced financial chart with Recharts `BarChart`, patients trend with `LineChart`, and clinical rings with `RadialBarChart`.
+- Re-validated frontend with `npm run build` and `npm run lint`.
+- Added lazy imports for chart-heavy dashboard modules with Suspense fallbacks.
+- Added Vite manual chunk strategy to isolate `recharts` in its own async chunk.
+- Re-validated frontend with `npm run build` and `npm run lint`.
 
 ## Blockers / Decisions Needed
-- Blocker: `recharts` install failed because npm registry is unreachable in this environment (`ENOTFOUND registry.npmjs.org`).
-- Decision needed: once network is available, run `npm install recharts` and swap local SVG/CSS chart renderers to Recharts implementations.
+- No active blocker for dashboard replication phase.
 
 ## Next Execution Slice
-1. Install `recharts` and convert financial/trend/clinical chart modules to Recharts while keeping current contracts.
-2. Connect dashboard view model from live API adapters with graceful fallback to mock data.
-3. Add accessibility QA pass (contrast, keyboard flow, ARIA summaries) on replicated dashboard widgets.
-4. Continue non-dashboard enhancements: WhatsApp linking, supplemental invoices, and payment gating.
+1. Connect dashboard view model from live API adapters with graceful fallback to mock data.
+2. Add accessibility QA pass (contrast, keyboard flow, ARIA summaries) on replicated dashboard widgets.
+3. Continue non-dashboard enhancements: WhatsApp linking, supplemental invoices, and payment gating.

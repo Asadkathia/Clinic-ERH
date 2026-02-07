@@ -54,5 +54,11 @@ Dashboard and shell were rebuilt to match the target reference layout and intera
   - responsive breakpoints: desktop, tablet, mobile
 
 ### Chart implementation note
-- `recharts` installation is currently blocked in this environment due registry network resolution failure (`ENOTFOUND registry.npmjs.org`).
-- Current implementation uses local SVG/CSS chart components with adapter helpers, so switching to `recharts` later only requires replacing renderer internals, not data contracts.
+- `recharts` is now installed and wired for dashboard charts.
+- Active Recharts modules:
+  - `FinancialSnapshotCard`: `BarChart`
+  - `PatientsOverviewCard`: `LineChart`
+  - `ClinicalKpiCard`: `RadialBarChart`
+- Charts are lazy-loaded via `React.lazy` and `Suspense` in `src/pages/DashboardPage.tsx`.
+- Build split strategy keeps chart library in a separate `recharts` chunk via `vite.config.ts`.
+- Data contracts remain unchanged (`DashboardViewModel`), so backend wiring can proceed without UI contract churn.
