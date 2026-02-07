@@ -37,6 +37,11 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+  deleteAppointment: (id: string) =>
+    apiFetch<{ success: true }>(`/api/appointments/${id}`, {
+      method: "DELETE",
+      body: JSON.stringify({}),
+    }),
   updateAppointment: (id: string, body: UpdateAppointmentInput) =>
     apiFetch<{ appointment: Appointment }>(`/api/appointments/${id}`, {
       method: "PATCH",

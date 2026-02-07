@@ -8,10 +8,11 @@ export function RequestSuccessPage() {
   const whatsappUrl = `https://wa.me/923001234567?text=${whatsappMessage}`;
 
   return (
-    <div className="container" style={{ padding: "40px 0" }}>
-      <Card>
+    <div className="container page-shell" style={{ padding: "60px 0" }}>
+      <Card className="glass" style={{ padding: 24 }}>
         <div className="stack">
-          <h2>Request received</h2>
+          <span className="soft-chip">Submitted</span>
+          <h2 className="page-title">Request received</h2>
           <p className="muted">
             Your request is in our CRM queue. A receptionist will confirm timing and appointment details on WhatsApp.
           </p>
@@ -29,4 +30,3 @@ export function RequestSuccessPage() {
     </div>
   );
 }
-

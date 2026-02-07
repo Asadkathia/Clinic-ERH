@@ -15,9 +15,9 @@
 | FR-CRM-002 | P1 | Patient edit UI not yet built | TBD | Not implemented | Not Started |
 | FR-CRM-003 | P1 | `PatientsPage` list only | `GET /api/patients` | Manual smoke | In Progress |
 | FR-CRM-004 | P1 | `WhatsappPage` conversation timeline UI | `GET /api/whatsapp/conversations`, `GET /api/whatsapp/conversations/:phone/messages` | Manual flow | In Progress |
-| FR-APT-001 | P0 | `AppointmentsPage` status badges/views | `GET /api/appointments`, `PATCH /api/appointments/:id` | Manual transitions | Done |
-| FR-APT-002 | P0 | `AppointmentsPage` schedule + actions | `PATCH /api/appointments/:id` | Manual transitions | Done |
-| FR-APT-003 | P0 | `RequestsPage`, landing intake path | `POST /api/lead-requests/:id/convert`, `POST /api/appointments` | Manual flow | Done |
+| FR-APT-001 | P0 | `AppointmentsPage` dynamic calendar cards + statuses | `GET /api/appointments`, `PATCH /api/appointments/:id` | Manual transitions | Done |
+| FR-APT-002 | P0 | `AppointmentsPage` schedule create/update/drag actions | `POST /api/appointments`, `PATCH /api/appointments/:id`, `DELETE /api/appointments/:id` | Manual transitions | Done |
+| FR-APT-003 | P0 | `RequestsPage` conversion + `AppointmentsPage` calendar intake | `POST /api/lead-requests/:id/convert`, `POST /api/appointments` | Manual flow | Done |
 | FR-APT-004 | P1 | WhatsApp send shortcut not in appointments yet | `POST /webhooks/whatsapp` (future adapter) | Not implemented | Not Started |
 | FR-INV-001 | P0 | `InvoicesPage` create flow | `POST /api/invoices` | Manual flow | Done |
 | FR-INV-002 | P0 | `InvoicesPage` item add + history | `POST /api/invoices/:id/items`, `GET /api/invoices/:id/items` | Manual flow | Done |

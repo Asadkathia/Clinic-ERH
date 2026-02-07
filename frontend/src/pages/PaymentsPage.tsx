@@ -51,10 +51,11 @@ export function PaymentsPage() {
   });
 
   return (
-    <div className="stack">
+    <div className="stack page-shell">
       <Card>
         <div className="stack">
-          <h3>Record Payment Proof</h3>
+          <span className="soft-chip">Collections</span>
+          <h3 className="page-title">Record Payment Proof</h3>
           <p className="muted">Phase 0 placeholder for screenshot-backed payment entries.</p>
           <Select
             value={draft.invoiceId}
@@ -123,11 +124,12 @@ export function PaymentsPage() {
 
       <Card>
         <div className="stack">
-          <h3>Payment Verification Queue</h3>
+          <h3 className="page-title">Payment Verification Queue</h3>
           {paymentsQuery.data?.payments.length === 0 ? <p className="muted">No payment proofs submitted yet.</p> : null}
           {paymentsQuery.data?.payments.map((payment) => (
             <div
               key={payment.id}
+              className="list-item"
               style={{
                 border: "1px solid var(--border)",
                 borderRadius: 10,

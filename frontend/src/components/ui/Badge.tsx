@@ -1,23 +1,16 @@
 type Props = {
   text: string;
+  className?: string;
 };
 
-export function Badge({ text }: Props) {
+export function Badge({ text, className }: Props) {
   return (
     <span
+      className={`ui-badge ${className ?? ""}`.trim()}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        borderRadius: 999,
-        padding: "4px 10px",
-        fontSize: 12,
-        fontWeight: 700,
-        background: "var(--primary-soft)",
-        color: "var(--primary)",
       }}
     >
       {text}
     </span>
   );
 }
-

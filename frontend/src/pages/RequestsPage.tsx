@@ -46,10 +46,15 @@ export function RequestsPage() {
   const selectedRequest = filteredRequests.find((request) => request.id === selectedId) ?? filteredRequests[0];
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 12 }}>
+    <div className="page-shell" style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 12 }}>
       <Card>
         <div className="stack">
-          <h3>Lead Requests</h3>
+          <div className="page-header">
+            <div className="stack" style={{ gap: 6 }}>
+              <span className="soft-chip">Intake Queue</span>
+              <h3 className="page-title">Lead Requests</h3>
+            </div>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 8 }}>
             <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search name / phone / service" />
             <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as "ALL" | RequestStatus)}>
@@ -74,6 +79,7 @@ export function RequestsPage() {
           {filteredRequests.map((item) => (
             <button
               key={item.id}
+              className="list-item"
               style={{
                 display: "grid",
                 gap: 10,
@@ -84,6 +90,7 @@ export function RequestsPage() {
                 textAlign: "left",
                 background: item.id === selectedRequest?.id ? "var(--primary-soft)" : "var(--surface)",
                 cursor: "pointer",
+                transition: "all var(--transition)",
               }}
               onClick={() => setSelectedId(item.id)}
             >
@@ -104,7 +111,9 @@ export function RequestsPage() {
 
       <Card>
         <div className="stack">
-          <h3>Request Detail</h3>
+          <h3 className="page-title" style={{ fontSize: 22 }}>
+            Request Detail
+          </h3>
           {!selectedRequest ? (
             <p className="muted">Select a request to view details.</p>
           ) : (

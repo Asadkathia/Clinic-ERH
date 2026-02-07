@@ -108,6 +108,7 @@ export type CreateAppointmentInput = {
   patientId: string;
   service: string;
   scheduledAt?: string | null;
+  status?: AppointmentStatus;
 };
 
 export type UpdateAppointmentInput = {
@@ -153,6 +154,7 @@ export const API_ENDPOINTS = [
   "GET /api/appointments",
   "POST /api/appointments",
   "PATCH /api/appointments/:id",
+  "DELETE /api/appointments/:id",
   "POST /api/invoices",
   "POST /api/invoices/:id/send-whatsapp",
   "POST /api/invoices/:id/items",

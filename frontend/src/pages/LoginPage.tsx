@@ -13,8 +13,8 @@ export function LoginPage() {
   const [role, setRole] = useState<"admin" | "receptionist">("receptionist");
 
   return (
-    <div className="container" style={{ padding: "60px 0", maxWidth: 520 }}>
-      <Card>
+    <div className="container page-shell" style={{ padding: "80px 0", maxWidth: 560 }}>
+      <Card className="glass" style={{ padding: 24 }}>
         <form
           className="stack"
           onSubmit={(event) => {
@@ -23,7 +23,9 @@ export function LoginPage() {
             navigate("/crm/dashboard");
           }}
         >
-          <h2>CRM Login</h2>
+          <span className="soft-chip">Welcome</span>
+          <h2 className="page-title">CRM Login</h2>
+          <p className="muted">Sign in to manage requests, appointments, invoices, and WhatsApp conversations.</p>
           <label className="stack" style={{ gap: 8 }}>
             Name
             <Input value={name} onChange={(e) => setName(e.target.value)} />
@@ -41,4 +43,3 @@ export function LoginPage() {
     </div>
   );
 }
-

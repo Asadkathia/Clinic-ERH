@@ -90,6 +90,7 @@ export const handlers = [
       patientId?: string;
       service?: string;
       scheduledAt?: string;
+      status?: Appointment["status"];
     };
     if (!payload.patientId || !payload.service) return jsonError("patientId and service are required", 422);
 
@@ -97,13 +98,20 @@ export const handlers = [
       id: nextId("apt"),
       patientId: payload.patientId,
       service: payload.service,
-      status: payload.scheduledAt ? "PENDING_CONFIRMATION" : "REQUESTED",
+      status: payload.status ?? (payload.scheduledAt ? "PENDING_CONFIRMATION" : "REQUESTED"),
       scheduledAt: payload.scheduledAt ?? null,
       createdAt: new Date().toISOString(),
     };
 
     db.appointments.unshift(appointment);
     return HttpResponse.json({ appointment }, { status: 201 });
+  }),
+
+  http.delete("/api/appointments/:id", ({ params }) => {
+    const index = db.appointments.findIndex((item) => item.id === params.id);
+    if (index < 0) return jsonError("Appointment not found", 404);
+    db.appointments.splice(index, 1);
+    return HttpResponse.json({ success: true });
   }),
 
   http.patch("/api/appointments/:id", async ({ request, params }) => {

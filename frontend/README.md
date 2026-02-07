@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+# Clinic ERH Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend application for the clinic CRM using React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Run
+- `npm run dev` starts local development server.
+- `npm run build` runs TypeScript build and production bundling.
+- `npm run lint` runs ESLint checks.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Dashboard UI Replication (Mock-First)
+Dashboard and shell were rebuilt to match the target reference layout and interaction model.
 
-## React Compiler
+### Component map
+- `src/components/layout/AppShell.tsx`
+  - Replicated sidebar sections (`Clinic`, `Finance`, `Other`)
+  - Top utility row (search, date range, customize/export, profile, sign out)
+- `src/pages/DashboardPage.tsx`
+  - Composes replicated dashboard modules and responsive layout
+- `src/features/dashboard/components/DashboardSectionCard.tsx`
+  - Reusable card shell with consistent title/meta/action pattern
+- `src/features/dashboard/components/ProductionKpiStrip.tsx`
+- `src/features/dashboard/components/ClinicalKpiCard.tsx`
+- `src/features/dashboard/components/FinancialSnapshotCard.tsx`
+- `src/features/dashboard/components/UtilizationMetricsCard.tsx`
+- `src/features/dashboard/components/ClientsDistributionCard.tsx`
+- `src/features/dashboard/components/PatientsOverviewCard.tsx`
+- `src/features/dashboard/components/AssistantInsightCard.tsx`
+- `src/features/dashboard/components/OperationsWorkbenchCard.tsx`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Data contracts (mock phase)
+- `src/features/dashboard/types.ts`
+  - `DashboardSummaryKpi`
+  - `ProductionKpiItem`
+  - `ClinicalKpiStats`
+  - `FinancialSeriesPoint`
+  - `UtilizationMetricRow`
+  - `PatientTrendPoint`
+  - `DemographicSplit`
+  - `DashboardViewModel`
+- `src/features/dashboard/mock-data.ts`
+  - Mock dashboard dataset used as source of truth in this phase
+- `src/features/dashboard/mappers.ts`
+  - Formatting and chart-coordinate mapping helpers
 
-## Expanding the ESLint configuration
+### Token groups
+- Global token source: `src/index.css`
+  - Semantic color tokens
+  - Radius, spacing, elevation scales
+  - Motion timing tokens
+  - UI primitive styles (`ui-btn`, `ui-input`, `ui-card`, `ui-badge`)
+- Dashboard/shell presentation layer: `src/features/dashboard/dashboard.css`
+  - `crm-*` classes for shell
+  - `dash-*` classes for dashboard cards and layout
+  - responsive breakpoints: desktop, tablet, mobile
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Chart implementation note
+- `recharts` installation is currently blocked in this environment due registry network resolution failure (`ENOTFOUND registry.npmjs.org`).
+- Current implementation uses local SVG/CSS chart components with adapter helpers, so switching to `recharts` later only requires replacing renderer internals, not data contracts.

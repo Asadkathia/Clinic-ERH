@@ -48,14 +48,16 @@ export function WhatsappPage() {
   });
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12 }}>
+    <div className="page-shell" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12 }}>
       <Card>
         <div className="stack">
-          <h3>WhatsApp Conversations</h3>
+          <span className="soft-chip">Communication</span>
+          <h3 className="page-title">WhatsApp Conversations</h3>
           {conversations.length === 0 ? <p className="muted">No conversations available.</p> : null}
           {conversations.map((conversation) => (
             <button
               key={conversation.id}
+              className="list-item"
               style={{
                 border: conversation.phone === selectedConversation?.phone ? "1px solid var(--primary)" : "1px solid var(--border)",
                 borderRadius: 10,
@@ -82,7 +84,7 @@ export function WhatsappPage() {
 
       <Card>
         <div className="stack">
-          <h3>Conversation Timeline</h3>
+          <h3 className="page-title">Conversation Timeline</h3>
           <p className="muted">
             {selectedConversation ? `${selectedConversation.patientName} · ${selectedConversation.phone}` : "Select a conversation"}
           </p>

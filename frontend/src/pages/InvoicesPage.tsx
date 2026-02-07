@@ -46,10 +46,11 @@ export function InvoicesPage() {
   );
 
   return (
-    <div className="stack">
+    <div className="stack page-shell">
       <Card>
         <div className="stack">
-          <h3>Create Invoice</h3>
+          <span className="soft-chip">Billing</span>
+          <h3 className="page-title">Create Invoice</h3>
           <p className="muted">Creates invoice from first available appointment (Phase 0 placeholder flow).</p>
           <Button
             onClick={() => {
@@ -66,10 +67,10 @@ export function InvoicesPage() {
 
       <Card>
         <div className="stack">
-          <h3>Invoices</h3>
+          <h3 className="page-title">Invoices</h3>
           {invoicesQuery.data?.invoices.length === 0 ? <p className="muted">No invoices yet.</p> : null}
           {invoicesQuery.data?.invoices.map((invoice) => (
-            <div key={invoice.id} style={{ border: "1px solid var(--border)", borderRadius: 10, padding: 12 }}>
+            <div key={invoice.id} className="list-item" style={{ border: "1px solid var(--border)", borderRadius: 10, padding: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
                 <strong>{invoice.invoiceNumber}</strong>
                 <Badge text={invoice.status} />

@@ -1,18 +1,25 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
-export function Card({ children }: { children: ReactNode }) {
+export function Card({
+  children,
+  interactive = true,
+  className,
+  style,
+}: {
+  children: ReactNode;
+  interactive?: boolean;
+  className?: string;
+  style?: CSSProperties;
+}) {
   return (
     <section
+      className={`ui-card ${interactive ? "interactive" : ""} ${className ?? ""}`.trim()}
       style={{
-        background: "var(--surface)",
-        border: "1px solid var(--border)",
-        borderRadius: "var(--radius)",
-        boxShadow: "var(--shadow)",
         padding: 16,
+        ...style,
       }}
     >
       {children}
     </section>
   );
 }
-

@@ -23,13 +23,14 @@ export function LandingPage() {
   });
 
   return (
-    <div className="container" style={{ padding: "40px 0" }}>
+    <div className="container page-shell" style={{ padding: "40px 0" }}>
       <div className="stack" style={{ gap: 24 }}>
+        <span className="soft-chip">Patient Intake</span>
         <h1 style={{ fontSize: 42, maxWidth: 700 }}>Book appointments and services with WhatsApp-first clinic support.</h1>
         <p className="muted">Complete this form and our staff will continue communication mostly on WhatsApp.</p>
       </div>
 
-      <Card>
+      <Card className="glass" style={{ marginTop: 10 }}>
         <form
           className="stack"
           onSubmit={(event) => {
@@ -78,4 +79,3 @@ export function LandingPage() {
     </div>
   );
 }
-

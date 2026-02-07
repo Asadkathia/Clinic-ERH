@@ -4,15 +4,10 @@ export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <select
       {...props}
+      className={`ui-select ${props.className ?? ""}`.trim()}
       style={{
-        width: "100%",
-        border: "1px solid var(--border)",
-        borderRadius: 10,
-        background: "#fff",
-        padding: "10px 12px",
-        fontSize: 14,
+        ...props.style,
       }}
     />
   );
 }
-
