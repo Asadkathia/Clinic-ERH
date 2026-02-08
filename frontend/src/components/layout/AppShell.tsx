@@ -30,7 +30,7 @@ const navGroups: NavGroup[] = [
     items: [
       { to: "/crm/invoices", label: "Billing & Payments" },
       { to: "/crm/payments", label: "Payment Queue" },
-      { label: "Reports & Analytics", badge: "Soon" },
+      { to: "/crm/audit", label: "Audit Trail" },
     ],
   },
   {
@@ -50,6 +50,7 @@ const routeLabelMap = new Map<string, string>([
   ["/crm/appointments", "Appointments"],
   ["/crm/invoices", "Invoices"],
   ["/crm/payments", "Payments"],
+  ["/crm/audit", "Audit Trail"],
   ["/crm/whatsapp", "WhatsApp"],
 ]);
 
@@ -62,7 +63,10 @@ export function AppShell() {
 
   return (
     <div className="crm-shell page-shell">
-      <aside className="crm-sidebar">
+      <a href="#crm-main-content" className="crm-skip-link">
+        Skip to main content
+      </a>
+      <aside className="crm-sidebar" aria-label="Sidebar navigation">
         <Link to="/crm/dashboard" className="crm-brand" aria-label="Go to dashboard">
           <span className="crm-brand-mark" aria-hidden>
             🦷
@@ -107,8 +111,8 @@ export function AppShell() {
         </div>
       </aside>
 
-      <main className="crm-main">
-        <header className="crm-topbar">
+      <main className="crm-main" id="crm-main-content">
+        <header className="crm-topbar" aria-label="Top utility bar">
           <label className="crm-topbar-search">
             <input
               aria-label="Search anything"
@@ -119,7 +123,7 @@ export function AppShell() {
           </label>
 
           <div className="crm-topbar-actions">
-            <button type="button" className="crm-pill-btn">
+            <button type="button" className="crm-pill-btn" aria-label="Date range selector">
               01 Apr 2025 - 01 Sep 2025
             </button>
             <button type="button" className="crm-pill-btn">
@@ -148,7 +152,7 @@ export function AppShell() {
           </div>
         </header>
 
-        <div className="crm-page-meta">
+        <div className="crm-page-meta" aria-live="polite">
           <h2>{currentLabel}</h2>
           <p>Role: {user?.role}</p>
         </div>

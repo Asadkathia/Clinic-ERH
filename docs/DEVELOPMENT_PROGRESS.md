@@ -6,7 +6,7 @@
 - Reference PRD: `docs/PRD.md`
 
 ## Current Status
-- Active phase: Phase 3 (Dashboard UI Replication - mock-first)
+- Active phase: Phase 8 (Quality hardening + operational flow completion)
 - Overall progress: In progress
 
 ## Task Tracker
@@ -36,7 +36,7 @@
 - [x] Landing form flow (initial implementation)
 - [x] CRM request ingestion path through mock API
 - [ ] Service catalog content depth and production copy
-- [ ] Anti-spam hardening and analytics instrumentation
+- [x] Anti-spam hardening and analytics instrumentation
 
 ### Phase 2+: Pending
 - [x] Lead conversion UX polish and role-specific actions (request filters + detail panel + conversion actions)
@@ -46,8 +46,8 @@
 - [x] Appointment status transition actions (initial version)
 - [x] Payment proof media preview workflow + rejection reason templates (initial version)
 - [x] WhatsApp conversation timeline UI (initial version)
-- [ ] Accessibility pass
-- [ ] E2E automation
+- [x] Accessibility pass
+- [x] E2E automation baseline (Playwright + MSW)
 - [x] Requirement traceability matrix (`FR/NFR -> Screen/API/Tests/Status`)
 - [x] Global UI polish pass (dynamic styling + microinteractions across pages)
 - [x] Advanced clinic dashboard widgets (recent log, to-do list, alerts, upcoming schedule)
@@ -58,6 +58,13 @@
 - [x] Dashboard and shell microinteraction pass
 - [x] Recharts renderer migration for dashboard charts
 - [x] Chart bundle optimization (lazy-loaded widgets + manual chunking)
+- [x] Live dashboard API adapter wiring with mock fallback
+- [x] WhatsApp conversation linkage to patient/appointment/invoice contexts
+- [x] Supplemental invoice mode for add-on billing
+- [x] Explicit payment gate for "Proceed to Test"
+- [x] Intake anti-spam controls + telemetry hooks
+- [x] Role-aware action restrictions for sensitive mutations (admin-only verify/reject/delete)
+- [x] Immutable audit trail view for request/invoice/payment/whatsapp lifecycle feed
 
 ## Work Log
 ### 2026-02-06
@@ -100,11 +107,33 @@
 - Added lazy imports for chart-heavy dashboard modules with Suspense fallbacks.
 - Added Vite manual chunk strategy to isolate `recharts` in its own async chunk.
 - Re-validated frontend with `npm run build` and `npm run lint`.
+- Connected dashboard page to live API queries (`requests`, `patients`, `appointments`, `invoices`, `payments`, `whatsapp`).
+- Added adapter logic that maps live API data to `DashboardViewModel` while preserving graceful fallback to mock data.
+- Re-validated frontend with `npm run build` and `npm run lint`.
+- Added accessibility hardening sweep across shell and priority pages with audit checklist (`docs/ACCESSIBILITY_AUDIT.md`).
+- Added intake anti-spam controls (honeypot, minimum delay, dedupe window) and telemetry events.
+- Added WhatsApp context linking panel with linked/unlinked/ambiguous states and CRM quick-open actions.
+- Added supplemental invoice flow and explicit verified-payment gate before proceed-to-test.
+- Added Playwright harness and deterministic E2E suites for Flow A/B/C plus anti-spam error path.
+- Re-validated frontend with `npm run build`, `npm run lint`, and `npm run test:e2e`.
+
+### 2026-02-08
+- Added Playwright accessibility assertions using `@axe-core/playwright` for login and core CRM shell flows.
+- Fixed accessibility-critical filter control naming on `RequestsPage` (`aria-label` for search/status/source controls).
+- Expanded E2E failure-path coverage for payment rejection status transitions and "reject-without-reason" guard behavior.
+- Added explicit unavailable-data fallback messaging in `PaymentsPage` and `WhatsappPage` query-error states.
+- Added role-based permission helper layer and enforced admin-only payment verification/rejection actions.
+- Added admin-only appointment delete enforcement across calendar cards and selected-day detail cards.
+- Added E2E role-restriction scenario validating receptionist cannot run payment verification actions.
+- Added new CRM route `/crm/audit` with immutable, read-only audit event timeline and entity/severity filters.
+- Added E2E coverage for audit trail visibility and read-only behavior expectations.
+- Hardened ESLint global ignores for Playwright artifact directories (`test-results`, `playwright-report`).
+- Re-validated frontend with `npm run lint`, `npm run build`, and `npm run test:e2e`.
 
 ## Blockers / Decisions Needed
-- No active blocker for dashboard replication phase.
+- No active blocker for current frontend wave.
 
 ## Next Execution Slice
-1. Connect dashboard view model from live API adapters with graceful fallback to mock data.
-2. Add accessibility QA pass (contrast, keyboard flow, ARIA summaries) on replicated dashboard widgets.
-3. Continue non-dashboard enhancements: WhatsApp linking, supplemental invoices, and payment gating.
+1. Add role-aware restrictions for invoice dispatch and high-risk financial actions.
+2. Add immutable audit-event attribution enrichment (actor/source metadata from backend when available).
+3. Expand E2E to include restricted invoice-dispatch messaging scenarios.

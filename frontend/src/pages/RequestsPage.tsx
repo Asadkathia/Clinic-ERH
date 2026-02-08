@@ -46,7 +46,7 @@ export function RequestsPage() {
   const selectedRequest = filteredRequests.find((request) => request.id === selectedId) ?? filteredRequests[0];
 
   return (
-    <div className="page-shell" style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 12 }}>
+    <main className="page-shell" style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 12 }} aria-label="Lead request queue">
       <Card>
         <div className="stack">
           <div className="page-header">
@@ -56,8 +56,13 @@ export function RequestsPage() {
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 8 }}>
-            <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search name / phone / service" />
-            <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as "ALL" | RequestStatus)}>
+            <Input
+              aria-label="Search lead requests"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search name / phone / service"
+            />
+            <Select aria-label="Filter lead requests by status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as "ALL" | RequestStatus)}>
               <option value="ALL">All Statuses</option>
               <option value="NEW">NEW</option>
               <option value="CONTACTED">CONTACTED</option>
@@ -65,7 +70,7 @@ export function RequestsPage() {
               <option value="CONVERTED">CONVERTED</option>
               <option value="CLOSED_LOST">CLOSED_LOST</option>
             </Select>
-            <Select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value as "ALL" | RequestSource)}>
+            <Select aria-label="Filter lead requests by source" value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value as "ALL" | RequestSource)}>
               <option value="ALL">All Sources</option>
               <option value="LANDING_FORM">LANDING_FORM</option>
               <option value="WHATSAPP">WHATSAPP</option>
@@ -130,6 +135,7 @@ export function RequestsPage() {
               </div>
               <div style={{ display: "flex", gap: 8 }}>
                 <Button
+                  data-testid="request-convert-button"
                   variant="secondary"
                   disabled={selectedRequest.status === "CONVERTED" || convertMutation.isPending}
                   onClick={() => convertMutation.mutate(selectedRequest.id)}
@@ -142,6 +148,6 @@ export function RequestsPage() {
           )}
         </div>
       </Card>
-    </div>
+    </main>
   );
 }

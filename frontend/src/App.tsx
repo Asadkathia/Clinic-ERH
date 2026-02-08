@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppShell } from "./components/layout/AppShell";
 import { ProtectedRoute } from "./lib/guards/ProtectedRoute";
 import { AppointmentsPage } from "./pages/AppointmentsPage";
+import { AuditTrailPage } from "./pages/AuditTrailPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { InvoicesPage } from "./pages/InvoicesPage";
 import { LandingPage } from "./pages/LandingPage";
@@ -36,6 +37,7 @@ function App() {
         <Route path="invoices" element={<InvoicesPage />} />
         <Route path="payments" element={<PaymentsPage />} />
         <Route path="whatsapp" element={<WhatsappPage />} />
+        <Route path="audit" element={<AuditTrailPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

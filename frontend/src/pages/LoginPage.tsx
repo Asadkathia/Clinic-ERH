@@ -13,7 +13,7 @@ export function LoginPage() {
   const [role, setRole] = useState<"admin" | "receptionist">("receptionist");
 
   return (
-    <div className="container page-shell" style={{ padding: "80px 0", maxWidth: 560 }}>
+    <main className="container page-shell" style={{ padding: "80px 0", maxWidth: 560 }} aria-labelledby="login-title">
       <Card className="glass" style={{ padding: 24 }}>
         <form
           className="stack"
@@ -24,22 +24,26 @@ export function LoginPage() {
           }}
         >
           <span className="soft-chip">Welcome</span>
-          <h2 className="page-title">CRM Login</h2>
+          <h2 className="page-title" id="login-title">
+            CRM Login
+          </h2>
           <p className="muted">Sign in to manage requests, appointments, invoices, and WhatsApp conversations.</p>
           <label className="stack" style={{ gap: 8 }}>
             Name
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
+            <Input data-testid="login-name" value={name} onChange={(e) => setName(e.target.value)} />
           </label>
           <label className="stack" style={{ gap: 8 }}>
             Role
-            <Select value={role} onChange={(e) => setRole(e.target.value as "admin" | "receptionist")}>
+            <Select data-testid="login-role" value={role} onChange={(e) => setRole(e.target.value as "admin" | "receptionist")}>
               <option value="receptionist">Receptionist</option>
               <option value="admin">Admin</option>
             </Select>
           </label>
-          <Button type="submit">Sign in</Button>
+          <Button type="submit" data-testid="login-submit">
+            Sign in
+          </Button>
         </form>
       </Card>
-    </div>
+    </main>
   );
 }

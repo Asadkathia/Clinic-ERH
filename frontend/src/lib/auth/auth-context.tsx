@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 
-type Role = "admin" | "receptionist";
-type User = { name: string; role: Role };
+export type Role = "admin" | "receptionist";
+export type User = { name: string; role: Role };
 
 type AuthContextValue = {
   user: User | null;

@@ -4,6 +4,23 @@
   min-height: 100vh;
 }
 
+.crm-skip-link {
+  position: absolute;
+  left: 10px;
+  top: -44px;
+  z-index: 100;
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  transition: top var(--motion-fast);
+}
+
+.crm-skip-link:focus {
+  top: 10px;
+}
+
 .crm-sidebar {
   display: flex;
   flex-direction: column;

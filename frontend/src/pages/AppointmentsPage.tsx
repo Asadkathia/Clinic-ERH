@@ -5,6 +5,8 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Select } from "../components/ui/Select";
+import { useAuth } from "../lib/auth/auth-context";
+import { canDeleteAppointments } from "../lib/auth/permissions";
 import type { Appointment, AppointmentStatus } from "../lib/api/contracts";
 import { api } from "../lib/api/services";
 
@@ -67,6 +69,7 @@ const statusTone: Record<AppointmentStatus, string> = {
 
 export function AppointmentsPage() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const appointmentsQuery = useQuery({ queryKey: ["appointments"], queryFn: api.listAppointments });
   const patientsQuery = useQuery({ queryKey: ["patients"], queryFn: api.listPatients });
   const [monthAnchor, setMonthAnchor] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
@@ -78,6 +81,7 @@ export function AppointmentsPage() {
     time: "10:00",
     status: "REQUESTED" as AppointmentStatus,
   });
+  const canDelete = canDeleteAppointments(user?.role);
 
   const createMutation = useMutation({
     mutationFn: api.createAppointment,
@@ -133,7 +137,7 @@ export function AppointmentsPage() {
   }
 
   return (
-    <div className="stack page-shell">
+    <main className="stack page-shell" aria-label="Appointments calendar">
       <Card>
         <div className="page-header">
           <div className="stack" style={{ gap: 6 }}>
@@ -260,9 +264,14 @@ export function AppointmentsPage() {
                               {appointment.service}
                             </strong>
                             <button
-                              onClick={() => deleteMutation.mutate(appointment.id)}
+                              onClick={() => {
+                                if (!canDelete) return;
+                                deleteMutation.mutate(appointment.id);
+                              }}
                               style={{ border: 0, background: "transparent", color: "var(--danger)", cursor: "pointer" }}
                               aria-label="Delete appointment"
+                              disabled={!canDelete}
+                              title={!canDelete ? "Admin role required" : undefined}
                             >
                               x
                             </button>
@@ -285,6 +294,7 @@ export function AppointmentsPage() {
               {displayDate(selectedDateKey)}
             </h3>
             <p className="muted">Create appointments and manage cards for the selected day.</p>
+            {!canDelete ? <p className="muted">Delete actions are restricted to admin role.</p> : null}
 
             <div className="stack" style={{ gap: 8 }}>
               <Input
@@ -321,6 +331,7 @@ export function AppointmentsPage() {
                 </Select>
               </div>
               <Button
+                data-testid="appointment-add-card"
                 disabled={!composer.service.trim() || !activePatientId || createMutation.isPending}
                 onClick={() => {
                   if (!activePatientId || !composer.service.trim()) return;
@@ -361,7 +372,7 @@ export function AppointmentsPage() {
                     <Button variant="secondary" onClick={() => updateMutation.mutate({ id: appointment.id, status: "CONFIRMED" })}>
                       Confirm
                     </Button>
-                    <Button variant="danger" onClick={() => deleteMutation.mutate(appointment.id)}>
+                    <Button variant="danger" disabled={!canDelete} onClick={() => deleteMutation.mutate(appointment.id)}>
                       Delete
                     </Button>
                   </div>
@@ -375,6 +386,6 @@ export function AppointmentsPage() {
           </div>
         </Card>
       </div>
-    </div>
+    </main>
   );
 }

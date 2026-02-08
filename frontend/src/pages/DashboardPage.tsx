@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { buildDashboardViewModel, formatKpiValue, formatTrend } from "../features/dashboard/mappers";
 import { AssistantInsightCard } from "../features/dashboard/components/AssistantInsightCard";
 import { ClientsDistributionCard } from "../features/dashboard/components/ClientsDistributionCard";
@@ -6,6 +7,7 @@ import { OperationsWorkbenchCard } from "../features/dashboard/components/Operat
 import { ProductionKpiStrip } from "../features/dashboard/components/ProductionKpiStrip";
 import { UtilizationMetricsCard } from "../features/dashboard/components/UtilizationMetricsCard";
 import "../features/dashboard/dashboard.css";
+import { api } from "../lib/api/services";
 
 const ClinicalKpiCard = lazy(() =>
   import("../features/dashboard/components/ClinicalKpiCard").then((module) => ({ default: module.ClinicalKpiCard })),
@@ -32,7 +34,33 @@ function ChartFallback({ title }: { title: string }) {
 }
 
 export function DashboardPage() {
-  const viewModel = buildDashboardViewModel();
+  const requestsQuery = useQuery({ queryKey: ["requests"], queryFn: api.listLeadRequests });
+  const patientsQuery = useQuery({ queryKey: ["patients"], queryFn: api.listPatients });
+  const appointmentsQuery = useQuery({ queryKey: ["appointments"], queryFn: api.listAppointments });
+  const invoicesQuery = useQuery({ queryKey: ["invoices"], queryFn: api.listInvoices });
+  const paymentsQuery = useQuery({ queryKey: ["payments"], queryFn: api.listPayments });
+  const conversationsQuery = useQuery({ queryKey: ["whatsapp-conversations"], queryFn: api.listWhatsappConversations });
+
+  const hasLiveData =
+    !!requestsQuery.data ||
+    !!patientsQuery.data ||
+    !!appointmentsQuery.data ||
+    !!invoicesQuery.data ||
+    !!paymentsQuery.data ||
+    !!conversationsQuery.data;
+
+  const viewModel = buildDashboardViewModel(
+    hasLiveData
+      ? {
+          requests: requestsQuery.data?.requests,
+          patients: patientsQuery.data?.patients,
+          appointments: appointmentsQuery.data?.appointments,
+          invoices: invoicesQuery.data?.invoices,
+          payments: paymentsQuery.data?.payments,
+          conversations: conversationsQuery.data?.conversations,
+        }
+      : undefined,
+  );
 
   return (
     <div className="dash-page page-shell">

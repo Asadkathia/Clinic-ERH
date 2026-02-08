@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { Card } from "../components/ui/Card";
+import { trackEvent } from "../lib/telemetry/events";
 
 export function RequestSuccessPage() {
   const [params] = useSearchParams();
@@ -19,7 +20,14 @@ export function RequestSuccessPage() {
           <p>
             Lead ID: <strong>{leadId ?? "N/A"}</strong>
           </p>
-          <a href={whatsappUrl} target="_blank" rel="noreferrer" style={{ color: "var(--primary)", fontWeight: 600 }}>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noreferrer"
+            data-testid="whatsapp-continue-link"
+            onClick={() => trackEvent("whatsapp_cta_clicked", { lead_id: leadId ?? "N/A", source: "request_success" })}
+            style={{ color: "var(--primary)", fontWeight: 600 }}
+          >
             Continue on WhatsApp
           </a>
           <Link to="/login" style={{ color: "var(--text-muted)" }}>

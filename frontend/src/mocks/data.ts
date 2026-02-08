@@ -33,10 +33,47 @@ export const db: {
       createdAt: now,
     },
   ],
-  patients: [],
-  appointments: [],
-  invoices: [],
-  invoiceItems: [],
+  patients: [
+    {
+      id: "pat_1",
+      fullName: "Ayesha Khan",
+      phone: "+923001112233",
+      createdAt: now,
+    },
+  ],
+  appointments: [
+    {
+      id: "apt_1",
+      patientId: "pat_1",
+      service: "General Consultation",
+      status: "PENDING_CONFIRMATION",
+      scheduledAt: null,
+      createdAt: now,
+    },
+  ],
+  invoices: [
+    {
+      id: "inv_1",
+      patientId: "pat_1",
+      appointmentId: "apt_1",
+      invoiceNumber: "INV-10001",
+      subtotal: 2500,
+      discount: 0,
+      total: 2500,
+      status: "SENT",
+      sentAt: now,
+    },
+  ],
+  invoiceItems: [
+    {
+      id: "item_1",
+      invoiceId: "inv_1",
+      description: "Consultation",
+      qty: 1,
+      unitPrice: 2500,
+      lineTotal: 2500,
+    },
+  ],
   payments: [],
   whatsappConversations: [
     {

@@ -7,6 +7,7 @@ import { Input } from "../components/ui/Input";
 import { Select } from "../components/ui/Select";
 import { api } from "../lib/api/services";
 import { useAuth } from "../lib/auth/auth-context";
+import { canVerifyPayments } from "../lib/auth/permissions";
 
 const REJECTION_REASONS = [
   "Screenshot unreadable",
@@ -30,6 +31,7 @@ export function PaymentsPage() {
   const [previewPaymentId, setPreviewPaymentId] = useState<string | null>(null);
   const [rejectionReason, setRejectionReason] = useState<string>("");
   const [customReason, setCustomReason] = useState<string>("");
+  const verifyAllowed = canVerifyPayments(user?.role);
 
   const createPayment = useMutation({
     mutationFn: api.createPayment,
@@ -51,7 +53,7 @@ export function PaymentsPage() {
   });
 
   return (
-    <div className="stack page-shell">
+    <main className="stack page-shell" aria-label="Payments verification workspace">
       <Card>
         <div className="stack">
           <span className="soft-chip">Collections</span>
@@ -105,6 +107,7 @@ export function PaymentsPage() {
             )}
           </div>
           <Button
+            data-testid="payment-record"
             onClick={() => {
               if (!draft.invoiceId) return;
               createPayment.mutate({
@@ -125,6 +128,16 @@ export function PaymentsPage() {
       <Card>
         <div className="stack">
           <h3 className="page-title">Payment Verification Queue</h3>
+          {!verifyAllowed ? (
+            <p className="muted" role="status" aria-live="polite">
+              Verification actions are restricted to admin role.
+            </p>
+          ) : null}
+          {paymentsQuery.isError ? (
+            <p className="muted" style={{ color: "var(--danger)" }} role="status" aria-live="polite">
+              Payments are temporarily unavailable. Please retry shortly.
+            </p>
+          ) : null}
           {paymentsQuery.data?.payments.length === 0 ? <p className="muted">No payment proofs submitted yet.</p> : null}
           {paymentsQuery.data?.payments.map((payment) => (
             <div
@@ -158,7 +171,12 @@ export function PaymentsPage() {
                   >
                     {previewPaymentId === payment.id ? "Hide Proof" : "Preview Proof"}
                   </Button>
-                  <Button variant="secondary" onClick={() => verifyPayment.mutate({ id: payment.id, status: "VERIFIED" })}>
+                  <Button
+                    data-testid={`payment-verify-${payment.id}`}
+                    variant="secondary"
+                    disabled={!verifyAllowed}
+                    onClick={() => verifyPayment.mutate({ id: payment.id, status: "VERIFIED" })}
+                  >
                     Verify
                   </Button>
                 </div>
@@ -188,10 +206,12 @@ export function PaymentsPage() {
                       placeholder="Custom reason (optional)"
                       value={customReason}
                       onChange={(event) => setCustomReason(event.target.value)}
-                      disabled={rejectionReason !== "OTHER"}
+                      disabled={!verifyAllowed || rejectionReason !== "OTHER"}
                     />
                     <Button
+                      data-testid={`payment-reject-${payment.id}`}
                       variant="danger"
+                      disabled={!verifyAllowed}
                       onClick={() => {
                         const reasonToSend = rejectionReason === "OTHER" ? customReason.trim() : rejectionReason;
                         if (!reasonToSend) return;
@@ -204,7 +224,9 @@ export function PaymentsPage() {
                 </div>
               ) : null}
               {verifyPayment.isError ? (
-                <p style={{ color: "var(--danger)" }}>{verifyPayment.error.message}</p>
+                <p style={{ color: "var(--danger)" }} role="status" aria-live="polite">
+                  {verifyPayment.error.message}
+                </p>
               ) : null}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(120px, 1fr))", gap: 8 }}>
                 <p className="muted">Invoice: {payment.invoiceId}</p>
@@ -215,6 +237,6 @@ export function PaymentsPage() {
           ))}
         </div>
       </Card>
-    </div>
+    </main>
   );
 }

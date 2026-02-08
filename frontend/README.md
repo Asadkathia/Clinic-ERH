@@ -6,6 +6,8 @@ Frontend application for the clinic CRM using React, TypeScript, and Vite.
 - `npm run dev` starts local development server.
 - `npm run build` runs TypeScript build and production bundling.
 - `npm run lint` runs ESLint checks.
+- `npm run test:e2e` runs Playwright flows against MSW-backed dev server.
+  - Includes accessibility baseline assertions via `@axe-core/playwright`.
 
 ## Dashboard UI Replication (Mock-First)
 Dashboard and shell were rebuilt to match the target reference layout and interaction model.
@@ -62,3 +64,26 @@ Dashboard and shell were rebuilt to match the target reference layout and intera
 - Charts are lazy-loaded via `React.lazy` and `Suspense` in `src/pages/DashboardPage.tsx`.
 - Build split strategy keeps chart library in a separate `recharts` chunk via `vite.config.ts`.
 - Data contracts remain unchanged (`DashboardViewModel`), so backend wiring can proceed without UI contract churn.
+
+### Live data adapter behavior
+- `src/pages/DashboardPage.tsx` now fetches live API datasets for dashboard-relevant entities.
+- `src/features/dashboard/mappers.ts` maps those entities into `DashboardViewModel`.
+- Adapter behavior is fallback-safe:
+  - If live data is unavailable, dashboard uses `mock-data.ts`.
+  - If partial data is available, computed widgets use live values where possible and retain mock defaults for missing dimensions.
+
+### Telemetry and anti-spam
+- Telemetry events are emitted from intake flow via `src/lib/telemetry/events.ts`.
+- Instrumented events:
+  - `form_started`
+  - `form_submitted`
+  - `form_failed`
+  - `whatsapp_cta_clicked`
+- Anti-spam controls in `LandingPage`:
+  - Honeypot field
+  - Minimum submit delay
+  - Duplicate submission guard window
+
+### Audit trail
+- Immutable audit feed is available at `/crm/audit`.
+- Feed is read-only and aggregates timestamped events from requests, appointments, invoices, payments, and WhatsApp conversations.
